@@ -50,7 +50,7 @@ public class RegisterUserConfirmServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		session.setAttribute("input_data",user);
 		
-		String view = "WEB-INF/view/RegisterUser-Confirm";
+		String view = "WEB-INF/view/RegisterUser-Confirm.jsp";
 		RequestDispatcher dispatcher = request.getRequestDispatcher(view);
 		dispatcher.forward(request, response);
 		
