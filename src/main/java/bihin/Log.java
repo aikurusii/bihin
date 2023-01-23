@@ -1,12 +1,18 @@
 package bihin;
 
 import java.io.IOException;
+
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import dao.Userdao;
+import dto.User;
+import util.GenerateHashedPw;
 /**
  * Servlet implementation class Log
  */
@@ -26,9 +32,39 @@ public class Log extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		
+		String mail = request.getParameter("mail");
+		String pw = request.getParameter("pw");
+		String salt = Userdao.getSalt(mail);
+		
+		// 取得したソルトがnullの場合は対象のユーザがいないので、Errorでログイン画面に戻す
+		if(salt == null) {
+			String view = "./?error=1";
+			RequestDispatcher dispatcher = request.getRequestDispatcher(view);
+			dispatcher.forward(request, response);
+			return;
+		}
+		
+		// 取得したソルトを使って入力したPWをハッシュ
+		String hashedPw = GenerateHashedPw.getSafetyPassword(pw, salt);
+		
+		// 入力されたID、ハッシュしたPWに一致するユーザを検索する
+		User account = Userdao.login(mail, hashedPw);
+		if(account == null) {
+			String view = "./?error=1";
+			RequestDispatcher dispatcher = request.getRequestDispatcher(view);
+			dispatcher.forward(request, response);
+		} else {
+			// ログイン情報をセッションに登録
+			HttpSession session = request.getSession();
+			session.setAttribute("user", account);
+		
+			String view = "WEB-INF/view/form.jsp";
+			RequestDispatcher dispatcher = request.getRequestDispatcher(view);
+			dispatcher.forward(request, response);
+		}
 	}
+	
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
