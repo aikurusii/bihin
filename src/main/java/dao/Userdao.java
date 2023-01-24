@@ -25,11 +25,11 @@ public class Userdao {
 	    String password = dbUri.getUserInfo().split(":")[1];
 	    String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();
 
-	    return DriverManager.getConnection(dbUrl, username, password);
+	    return DriverManager.getConnection(dbUrl , username, password);
 	}
 	
 	public static int registerAccount(User account) {
-		String sql = "INSERT INTO user VALUES(default, ?, ?, ?, ?)";
+		String sql = "INSERT INTO bihin_account VALUES(default, ?, ?, ?, ?)";
 		int result = 0;
 		
 		// ランダムなソルトの取得(今回は32桁で実装)
@@ -60,7 +60,7 @@ public class Userdao {
 	
 	// メールアドレスを元にソルトを取得
 	public static String getSalt(String mail) {
-		String sql = "SELECT salt FROM user WHERE mail = ?";
+		String sql = "SELECT salt FROM bihin_account WHERE mail = ?";
 		
 		try (
 				Connection con = getConnection();
