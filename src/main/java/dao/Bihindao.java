@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dto.Bihin;
+import dto.Bihin2;
 
 public class Bihindao {
 
@@ -101,15 +102,16 @@ public class Bihindao {
 	}
 
 	//備品削除（id）
-		public static int deletebihin(String id) {
+		public static int deletebihin(Bihin2 id) {
 			String sql = "DELETE FROM bihin WHERE id = ?";
 			int result = 0;
+			
 			try (
 				 Connection con = getConnection();	// DB接続
 				 PreparedStatement pstmt = con.prepareStatement(sql);			// 構文解析
 				 ){
-				int idInt = Integer.parseInt(id);
-				pstmt.setInt(1, idInt);
+				pstmt.setInt(1, id.getId());
+				
 				result = pstmt.executeUpdate();
 			} catch (SQLException e) {
 				e.printStackTrace();
