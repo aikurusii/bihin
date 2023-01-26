@@ -45,7 +45,7 @@ public class RegisterUserExecuteServlet extends HttpServlet {
 		if(result == 1) {
 			session.removeAttribute("input_data");
 			
-			path = "WEB-INF/view/-Success.jsp";
+			path = "WEB-INF/view/RegisterUser-Success.jsp";
 		}else {
 			path = "WEB-INF/view/RegisterUser-Form.jsp?error=1";
 		}
